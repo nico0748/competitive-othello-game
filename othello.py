@@ -13,16 +13,17 @@ def _int_(self):
     self.currnt_player = 1 # Black starts
 
 def display_board(self):
-    print("  " + " ".join(str(i) for i in range(self.BOARD_SIZE)))
-    print(" +-----------------+")
-    for i in range(self.BOARD_SIZE):
-        row _str = f"{i+1}|"
-        for j in range(self.BOARD_SIZE):
-            if self.board[i][j] == 1:
-                row_str += "B|"
-            elif self.board[i][j] == 2:
-                row_str += "W|"
-            else:
-                row_str += " |"
-        print(row_str)
-    print(" +-----------------+")
+        print("\n  a b c d e f g h")
+        print(" +-----------------+")
+        for i in range(self.BOARD_SIZE):
+            row_str = f"{i + 1}| "
+            for j in range(self.BOARD_SIZE):
+                stone = self.board[i][j]
+                if stone == 1:
+                    row_str += "● " # 黒石
+                elif stone == 2:
+                    row_str += "○ " # 白石
+                else:
+                    row_str += "・ " # 空白
+            print(row_str + "|")
+        print(" +-----------------+")
