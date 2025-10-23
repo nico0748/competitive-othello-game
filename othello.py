@@ -27,9 +27,9 @@ class Othello:
             for j in range(self.BOARD_SIZE):
                 pos = i * self.BOARD_SIZE + j
                 if self.board[pos] == self.black:
-                    row.append("● ")
+                    row.append("b ")
                 elif self.board[pos] == self.white:
-                    row.append("○ ")
+                    row.append("w")
                 else:
                     row.append(". ")
             print(f"{i} " + " ".join(row))
