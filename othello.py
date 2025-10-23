@@ -17,7 +17,7 @@ class Othello:
         self.board[28] = self.black # Black
         self.board[35] = self.black # Black
         self.board[36] = self.white # White
-        self.current_player = self.black # Black start
+        self.current_player = self.black # Black start　　
 
     # 盤面描画関数
     def display_board(self):
