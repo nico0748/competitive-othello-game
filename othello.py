@@ -40,7 +40,7 @@ class Othello:
         x  = pos // self.BOARD_SIZE
         y = pos % self.BOARD_SIZE
 
-        if self.board[x][y] != self.empty:
+        if self.board[pos] != self.empty:
             return False
         
         opponent = self.white if self.current_player == self.black else self.black
@@ -55,15 +55,15 @@ class Othello:
             stones_to_flip = []
 
             while 0 <= nx < self.BOARD_SIZE and 0 <= ny < self.BOARD_SIZE:
-                if self.board[nx][ny] == opponent:
+                if self.board[nx*self.BOARD_SIZE + ny] == opponent:
                     stones_to_flip.append((nx, ny))
-                elif self.board[nx][ny] == self.current_player:
+                elif self.board[nx*self.BOARD_SIZE + ny] == self.current_player:
                     if stones_to_flip:
                         valid_move = True
                         if execute:
                             for fx, fy in stones_to_flip:
-                                self.board[fx][fy] = self.current_player
-                            self.board[x][y] = self.current_player
+                                self.board[fx*self.BOARD_SIZE + fy] = self.current_player
+                            self.board[x*self.BOARD_SIZE + y] = self.current_player
                     break
                 else:
                     break
@@ -89,7 +89,7 @@ class Othello:
         self.current_player = self.white if self.current_player == self.black else self.black
         self.available_moves = []
         for i in range(self.BOARD_SIZE * self.BOARD_SIZE):
-            if self.board[i // self.BOARD_SIZE][i % self.BOARD_SIZE] == self.empty and self.convert_color(i, execute=False):
+            if self.board[i] == self.empty and self.convert_color(i, execute=False):
                 self.available_moves.append(i)
         if not self.available_moves:
             return False if end else self.update_game(end=True)
