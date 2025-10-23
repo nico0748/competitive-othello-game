@@ -29,7 +29,7 @@ class Othello:
                 if self.board[pos] == self.black:
                     row.append("b ")
                 elif self.board[pos] == self.white:
-                    row.append("w")
+                    row.append("w ")
                 else:
                     row.append(". ")
             print(f"{i} " + " ".join(row))
