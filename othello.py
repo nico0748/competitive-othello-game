@@ -86,7 +86,6 @@ class Othello:
 
     # アップデート関数
     def update_game(self, end=False):
-        self.current_player = self.white if self.current_player == self.black else self.black
         self.available_moves = []
         for i in range(self.BOARD_SIZE * self.BOARD_SIZE):
             if self.board[i] == self.empty and self.convert_color(i, execute=False):
@@ -94,6 +93,7 @@ class Othello:
         if not self.available_moves:
             return False if end else self.update_game(end=True)
         self.get_player_input()
+        self.current_player = self.white if self.current_player == self.black else self.black # プレイヤー交代　ここを下にずらせば黒スタートになる
         return True
     
     # 入力関数(CUI)
