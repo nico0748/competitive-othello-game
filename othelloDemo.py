@@ -118,7 +118,7 @@ class Othello:
                         pygame.draw.circle(screen, (0,0,0), rect.center, cell_size//2 - 5)
                     elif self.board[pos] == self.white:
                         pygame.draw.circle(screen, (255,255,255), rect.center, cell_size//2 - 5)
-                    elif pos in self.available_moves:
+                    elif pos in self.available_moves: #有効手を表示
                         pygame.draw.circle(screen, (200,200,0), rect.center, 5)
             pygame.display.flip()
 
