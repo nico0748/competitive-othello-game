@@ -93,7 +93,7 @@ class Othello:
         if not self.available_moves:
             return False if end else self.update_game(end=True)
         self.get_player_input()
-        self.current_player = self.white if self.current_player == self.black else self.black # プレイヤー交代　ここを下にずらせば黒スタートになる
+        self.current_player = self.white if self.current_player == self.black else self.black # 白スタート原因
         return True
 
     # 入力関数(pygame版)
