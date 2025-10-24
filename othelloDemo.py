@@ -140,8 +140,8 @@ class Othello:
 
 # メイン関数
 def main():
-    pygame.init()                # オセロインスタンス生成
-    game = Othello()
+    pygame.init()
+    game = Othello()                # オセロインスタンス生成
     game.display_board()
     flag = True                  # ゲームが続いてるか否かのフラグ (True:続行中, False:終了)
     while flag:
