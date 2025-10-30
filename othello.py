@@ -1,5 +1,6 @@
 import sys
 import pygame
+import random
 
 class Othello:
     # 固有の定数定義
@@ -96,6 +97,18 @@ class Othello:
         self.current_player = self.white if self.current_player == self.black else self.black # 白スタート原因
         return True
 
+    def update_game_computer(self):
+        self.current_player = self.white if self.current_player == self.black else self.black
+        self.available_moves = []
+        for i in range(self.BOARD_SIZE * self.BOARD_SIZE):
+            if self.board[i] == self.empty and self.convert_color(i, execute=False):
+                self.available_moves.append(i)
+        if not self.available_moves:
+            return False
+        pos = self.available_moves[0]
+        self.get_computer_input()
+        return True
+
     # 入力関数(pygame版)
     def get_player_input(self):
         player = "White" if self.current_player == self.white else "Black"
@@ -105,6 +118,21 @@ class Othello:
         screen_size = self.BOARD_SIZE * cell_size
         pygame.display.set_caption("Othello (Click to Play)")
         screen = pygame.display.set_mode((screen_size, screen_size))
+
+    def get_computer_input(self):
+        player = "White" if self.current_player == self.white else "Black"
+        print(f"{player}'s turn. Click on the board.")
+
+        cell_size = 60
+        screen_size = self.BOARD_SIZE * cell_size
+        pygame.display.set_caption("Othello (Click to Play)")
+        screen = pygame.display.set_mode((screen_size, screen_size))
+
+        if self.current_player == self.black:  
+            pos = random.choice(self.available_moves)
+            self.convert_color(pos)
+            return
+        
 
         # 石とマスを描画する内部関数
         def draw_board():
@@ -194,9 +222,19 @@ def main():
         game.judge_winner()
         pygame.quit()
     elif mode == 2:
-        print("Player vs Computer mode is not implemented yet.")
         first_move = select_first_move()
-        print(f"You selected option {first_move}. (Functionality not implemented)")
+        pygame.init()
+        game = Othello()                # オセロインスタンス生成
+        game.display_board()
+        flag = True                  # ゲームが続いてるか否かのフラグ (True:続行中, False:終了)
+        if first_move == 2:
+            game.current_player = game.white
+        while flag:
+            flag = game.update_game_computer()
+            game.display_board()
+        game.judge_winner()
+        pygame.quit()
+
     else:
         print("Exiting the game.")
         sys.exit()
