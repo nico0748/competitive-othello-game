@@ -162,7 +162,23 @@ def select_mode():
                 print("Invalid input. Please enter a number between 1 to 3")
                 break    
             
-    
+def select_first_move():
+    options = ["Player (Black)", "Computer (White)"]
+
+    while True:
+        print("---Select First Move---")
+        for i, option in enumerate(options, 1):
+            print(f"{i}: {option}")
+        print("-----------------------")
+
+        try:
+            choice = int(input("Enter your choice (1-2): "))
+            if choice in [1, 2]:
+                return choice
+            else:
+                print("Invalid choice. Please select a valid option.")
+        except ValueError:
+            print("Invalid input. Please enter a number between 1 to 2")
 
 # メイン関数
 def main():
@@ -179,6 +195,8 @@ def main():
         pygame.quit()
     elif mode == 2:
         print("Player vs Computer mode is not implemented yet.")
+        first_move = select_first_move()
+        print(f"You selected option {first_move}. (Functionality not implemented)")
     else:
         print("Exiting the game.")
         sys.exit()
