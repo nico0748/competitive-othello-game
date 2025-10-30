@@ -136,18 +136,52 @@ class Othello:
                     pos = row * self.BOARD_SIZE + col
                     if pos in self.available_moves:
                         self.convert_color(pos)
-                        return  
+                        return
+
+    
+def select_mode():
+        options = ["Player vs Player", "Player vs Computer", "End Game"]
+
+        while True:
+            print("---Select Game Mode---")
+            for i, option in enumerate(options, 1):
+                print(f"{i}: {option}")
+            print("-----------------------")
+
+            try:
+                choice = int(input("Enter your choice (1-3): "))
+                if choice in [1, 2]:
+                    return choice
+                elif choice == 3:
+                    print("Exiting the game.")
+                    sys.exit()
+                    break
+                else:
+                    print("Invalid choice. Please select a valid option.")
+            except ValueError:
+                print("Invalid input. Please enter a number between 1 to 3")
+                break    
+            
+    
 
 # メイン関数
 def main():
-    pygame.init()
-    game = Othello()                # オセロインスタンス生成
-    game.display_board()
-    flag = True                  # ゲームが続いてるか否かのフラグ (True:続行中, False:終了)
-    while flag:
-        flag = game.update_game()
+    mode = select_mode()
+    if mode == 1:
+        pygame.init()
+        game = Othello()                # オセロインスタンス生成
         game.display_board()
-    game.judge_winner()
+        flag = True                  # ゲームが続いてるか否かのフラグ (True:続行中, False:終了)
+        while flag:
+            flag = game.update_game()
+            game.display_board()
+        game.judge_winner()
+        pygame.quit()
+    elif mode == 2:
+        print("Player vs Computer mode is not implemented yet.")
+    else:
+        print("Exiting the game.")
+        sys.exit()
     pygame.quit()
 
 if __name__ == "__main__":
