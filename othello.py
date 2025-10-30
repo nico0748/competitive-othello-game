@@ -163,7 +163,7 @@ def select_mode():
                 break    
             
 def select_first_move():
-    options = ["Player (Black)", "Computer (White)"]
+    options = ["Player", "Computer"]
 
     while True:
         print("---Select First Move---")
