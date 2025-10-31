@@ -18,8 +18,8 @@ class Othello:
         self.board[28] = self.black # Black
         self.board[35] = self.black # Black
         self.board[36] = self.white # White
-        self.current_player = self.black # Black starts
-
+        self.current_player = self.black # Black start
+        self.computer_color = None
     # 盤面描画関数
     def display_board(self):
         print("  0  1  2  3  4  5  6  7")
@@ -92,23 +92,24 @@ class Othello:
             if self.board[i] == self.empty and self.convert_color(i, execute=False):
                 self.available_moves.append(i)
         if not self.available_moves:
+            print(f"{'Black' if self.current_player == self.black else 'White'} has no moves. Passing turn.")
+            self.current_player = self.white if self.current_player == self.black else self.black
             return False if end else self.update_game(end=True)
         self.get_player_input()
         self.current_player = self.white if self.current_player == self.black else self.black # 白スタート原因
         return True
 
-        
-
-    def update_game_computer(self):
-        self.current_player = self.white if self.current_player == self.black else self.black
+    def update_game_computer(self, end=False):
         self.available_moves = []
         for i in range(self.BOARD_SIZE * self.BOARD_SIZE):
             if self.board[i] == self.empty and self.convert_color(i, execute=False):
                 self.available_moves.append(i)
         if not self.available_moves:
-            return False
-        pos = self.available_moves[0]
+            print(f"{'Black' if self.current_player == self.black else 'White'} has no moves. Passing turn.")
+            self.current_player = self.white if self.current_player == self.black else self.black
+            return False if end else self.update_game_computer(end=True)
         self.get_computer_input()
+        self.current_player = self.white if self.current_player == self.black else self.black
         return True
 
     # 入力関数(pygame版)
@@ -118,13 +119,8 @@ class Othello:
 
         cell_size = 60
         screen_size = self.BOARD_SIZE * cell_size
-        pygame.display.set_caption("Othello (Click to Play)")
+        pygame.display.set_caption(f"Othello (Player vs Player) - {player}'s Turn")
         screen = pygame.display.set_mode((screen_size, screen_size))
-
-
-
-
-        
 
         # 石とマスを描画する内部関数
         def draw_board():
@@ -141,7 +137,6 @@ class Othello:
                     elif pos in self.available_moves:
                         pygame.draw.circle(screen, (200,200,0), rect.center, 5)
             pygame.display.flip()
-
 
         while True:
             draw_board()
@@ -164,14 +159,11 @@ class Othello:
 
         cell_size = 60
         screen_size = self.BOARD_SIZE * cell_size
-        pygame.display.set_caption("Othello (Click to Play)")
+        pygame.display.set_caption(f"Othello (Player vs CPU) - {player}'s Turn")
         screen = pygame.display.set_mode((screen_size, screen_size))
 
-        if self.current_player == self.black:  
-            pos = random.choice(self.available_moves)
-            self.convert_color(pos)
-            return
-
+        if self.current_player == self.computer_color:  
+            pass
         def draw_board():
             screen.fill((0, 128, 0))  # 緑の背景
             for i in range(self.BOARD_SIZE):
@@ -183,11 +175,17 @@ class Othello:
                         pygame.draw.circle(screen, (0,0,0), rect.center, cell_size//2 - 5)
                     elif self.board[pos] == self.white:
                         pygame.draw.circle(screen, (255,255,255), rect.center, cell_size//2 - 5)
-                    elif pos in self.available_moves:
+                    elif self.current_player != self.computer_color and pos in self.available_moves:
                         pygame.draw.circle(screen, (200,200,0), rect.center, 5)
             pygame.display.flip()
-
-
+        # コンピュータの場合，ランダムに配置
+        if self.current_player == self.computer_color:  
+            draw_board() 
+            pos = random.choice(self.available_moves)
+            self.convert_color(pos)
+            
+            draw_board() 
+            return
 
         while True:
             draw_board()
@@ -259,20 +257,22 @@ def main():
             game.display_board()
         game.judge_winner()
         pygame.quit()
+
     elif mode == 2:
-        first_move = select_first_move()
+        first_move = select_first_move() 
         pygame.init()
         game = Othello()                # オセロインスタンス生成
+        if first_move == 1: 
+            game.computer_color = game.white 
+        else: 
+            game.computer_color = game.black 
         game.display_board()
-        flag = True                  # ゲームが続いてるか否かのフラグ (True:続行中, False:終了)
-        if first_move == 2:
-            game.current_player = game.white
+        flag = True                  # ゲームが続いてるか否かのフラグ (True:続行中, False:終了)         
         while flag:
-            flag = game.update_game_computer()
+            flag = game.update_game_computer() 
             game.display_board()
         game.judge_winner()
         pygame.quit()
-
     else:
         print("Exiting the game.")
         sys.exit()
