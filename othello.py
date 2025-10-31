@@ -97,6 +97,8 @@ class Othello:
         self.current_player = self.white if self.current_player == self.black else self.black # 白スタート原因
         return True
 
+        
+
     def update_game_computer(self):
         self.current_player = self.white if self.current_player == self.black else self.black
         self.available_moves = []
@@ -119,19 +121,9 @@ class Othello:
         pygame.display.set_caption("Othello (Click to Play)")
         screen = pygame.display.set_mode((screen_size, screen_size))
 
-    def get_computer_input(self):
-        player = "White" if self.current_player == self.white else "Black"
-        print(f"{player}'s turn. Click on the board.")
 
-        cell_size = 60
-        screen_size = self.BOARD_SIZE * cell_size
-        pygame.display.set_caption("Othello (Click to Play)")
-        screen = pygame.display.set_mode((screen_size, screen_size))
 
-        if self.current_player == self.black:  
-            pos = random.choice(self.available_moves)
-            self.convert_color(pos)
-            return
+
         
 
         # 石とマスを描画する内部関数
@@ -149,6 +141,52 @@ class Othello:
                     elif pos in self.available_moves:
                         pygame.draw.circle(screen, (200,200,0), rect.center, 5)
             pygame.display.flip()
+
+
+        while True:
+            draw_board()
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    pygame.quit()
+                    sys.exit()
+                if event.type == pygame.MOUSEBUTTONDOWN:
+                    x, y = event.pos
+                    row = y // cell_size
+                    col = x // cell_size
+                    pos = row * self.BOARD_SIZE + col
+                    if pos in self.available_moves:
+                        self.convert_color(pos)
+                        return
+
+    def get_computer_input(self):
+        player = "White" if self.current_player == self.white else "Black"
+        print(f"{player}'s turn. Click on the board.")
+
+        cell_size = 60
+        screen_size = self.BOARD_SIZE * cell_size
+        pygame.display.set_caption("Othello (Click to Play)")
+        screen = pygame.display.set_mode((screen_size, screen_size))
+
+        if self.current_player == self.black:  
+            pos = random.choice(self.available_moves)
+            self.convert_color(pos)
+            return
+
+        def draw_board():
+            screen.fill((0, 128, 0))  # 緑の背景
+            for i in range(self.BOARD_SIZE):
+                for j in range(self.BOARD_SIZE):
+                    rect = pygame.Rect(j*cell_size, i*cell_size, cell_size, cell_size)
+                    pygame.draw.rect(screen, (0,0,0), rect, 1)
+                    pos = i * self.BOARD_SIZE + j
+                    if self.board[pos] == self.black:
+                        pygame.draw.circle(screen, (0,0,0), rect.center, cell_size//2 - 5)
+                    elif self.board[pos] == self.white:
+                        pygame.draw.circle(screen, (255,255,255), rect.center, cell_size//2 - 5)
+                    elif pos in self.available_moves:
+                        pygame.draw.circle(screen, (200,200,0), rect.center, 5)
+            pygame.display.flip()
+
 
 
         while True:
