@@ -46,3 +46,5 @@ pygameのモジュールターミナルでダウンロードする
 
 ### 参考資料
 - https://qiita.com/hayama17/items/5b1291d111e43edcbdd5
+- https://python.joho.info/pygame/pygame-othello-minimax/
+- https://python.joho.info/pygame/pygame-othello-alpha-beta-pruning/#toc3
