@@ -153,6 +153,79 @@ class Othello:
                         self.convert_color(pos)
                         return
 
+    # アルファ・ベータ法を使った盤面評価関数
+    def evaluate_board(self):
+        if self.computer_color is None:
+            return 0
+            
+        player_color = self.black if self.computer_color == self.white else self.white
+
+        computer_count = sum(1 for x in self.board if x == self.computer_color)
+        player_count = sum(1 for x in self.board if x == player_color)
+        
+        return computer_count - player_count
+
+    def _get_available_moves(self):
+        moves = []
+        for i in range(self.BOARD_SIZE * self.BOARD_SIZE):
+            if self.board[i] == self.empty and self.convert_color(i, execute=False):
+                moves.append(i)
+        return moves
+
+    # アルファ・ベータ法の実装
+    def minimax(self, depth, is_maximizing, alpha, beta):
+        available_moves = self._get_available_moves()
+
+        # 終了条件 
+        if depth == 3 or not available_moves:
+            return self.evaluate_board()
+
+        if is_maximizing: 
+            max_eval = float('-inf')
+            
+            for pos in available_moves:
+            
+                original_board_state = list(self.board)
+                original_player = self.current_player
+
+                self.convert_color(pos, execute=True) 
+
+                self.current_player = self.black if self.current_player == self.white else self.white 
+                
+                eval = self.minimax(depth + 1, False, alpha, beta)
+
+                self.board = original_board_state
+                self.current_player = original_player
+
+                max_eval = max(max_eval, eval)
+                alpha = max(alpha, eval)
+                if beta <= alpha:
+                    break 
+            return max_eval
+        
+        else: 
+            min_eval = float('inf')
+            
+            for pos in available_moves:
+
+                original_board_state = list(self.board)
+                original_player = self.current_player
+
+                self.convert_color(pos, execute=True)
+                
+                self.current_player = self.black if self.current_player == self.white else self.white
+
+                eval = self.minimax(depth + 1, True, alpha, beta) 
+                
+                self.board = original_board_state
+                self.current_player = original_player
+
+                min_eval = min(min_eval, eval)
+                beta = min(beta, eval)
+                if beta <= alpha:
+                    break 
+            return min_eval
+            
     def get_computer_input(self):
         player = "White" if self.current_player == self.white else "Black"
         print(f"{player}'s turn. Click on the board.")
@@ -178,13 +251,44 @@ class Othello:
                     elif self.current_player != self.computer_color and pos in self.available_moves:
                         pygame.draw.circle(screen, (200,200,0), rect.center, 5)
             pygame.display.flip()
-        # コンピュータの場合，ランダムに配置
+        
         if self.current_player == self.computer_color:  
             draw_board() 
-            pos = random.choice(self.available_moves)
-            self.convert_color(pos)
+            pygame.time.wait(100) 
+
+            best_score = float('-inf')
+            best_move = None
             
-            draw_board() 
+
+            player_color = self.black if self.computer_color == self.white else self.white 
+
+            for pos in self.available_moves:
+                
+                original_board_state = list(self.board)
+                original_player = self.current_player 
+
+                self.convert_color(pos, execute=True)
+                
+                self.current_player = player_color 
+                
+                eval = self.minimax(0, False, float('-inf'), float('inf')) 
+                
+                self.board = original_board_state
+                self.current_player = original_player
+
+                if eval > best_score:
+                    best_score = eval
+                    best_move = pos
+            
+            if best_move is not None:
+                self.convert_color(best_move, execute=True)
+            else:
+                
+                if self.available_moves:
+                    self.convert_color(random.choice(self.available_moves), execute=True)
+
+            draw_board() # コンピュータが打った後の盤面を描画
+            pygame.time.wait(200) # 打った結果を見せるために少し待つ
             return
 
         while True:
